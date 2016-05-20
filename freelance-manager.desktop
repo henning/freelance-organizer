@@ -1,0 +1,11 @@
+#!/usr/bin/env xdg-open
+
+[Desktop Entry]
+Version=0.2
+Name=Freelance-Manager
+Comment=freelance manaer
+Exec=env opt/freelance_organizer/run-production.sh
+#Icon=/home/henning/opt/eclipse/icon.xpm
+Terminal=true
+Type=Application
+Categories=Utility;Application
