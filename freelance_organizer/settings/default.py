@@ -37,7 +37,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'timetracker',
-    'travel_log'
+    'travel_log',
+    'simple_crm'
 )
 
 MIDDLEWARE_CLASSES = (
