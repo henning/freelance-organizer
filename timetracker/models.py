@@ -19,7 +19,7 @@ class Project(models.Model):
     class Meta:
         ordering = ["name"]
 
-    def __str__(self):
+    def __unicode__(self):
         return self.name
 
 class TimeSlice(models.Model):
@@ -61,5 +61,5 @@ class TimeSlice(models.Model):
 
         return duration_minutes
 
-    def __str__(self):
+    def __unicode__(self):
         return self.description
