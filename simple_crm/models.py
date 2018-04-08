@@ -59,7 +59,7 @@ class BusinessOpportunity(BaseModel):
     is_open = models.BooleanField(default=True)
     is_realized = models.BooleanField(default=False)
 
-    contact_person = models.ForeignKey(ContactPerson, blank=True)
+    contact_person = models.ForeignKey(ContactPerson, blank=True, null=True)
 
     class Meta:
         ordering = ["name", "last_changed"]
@@ -76,8 +76,15 @@ class Activity(BaseModel):
 
     short_description = models.CharField(max_length=80)
 
-    contact_person = models.ForeignKey(ContactPerson, blank=True)
+    contact_person = models.ForeignKey(ContactPerson, blank=True, null=True)
 
-    business_opportunity = models.ForeignKey(BusinessOpportunity, blank=True)
+    business_opportunity = models.ForeignKey(
+        BusinessOpportunity, blank=True, null=True)
 
+    # date_due
+    # date_start
+    # date_completed
+
+    def __str__(self):
+        return self.short_description
 
