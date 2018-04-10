@@ -17,7 +17,11 @@ class ProjectAdmin(admin.ModelAdmin):
 
  
 class TimeSliceAdmin(admin.ModelAdmin):
-    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        return qs.filter(project__is_active=True)
+
     def toggle_invoiced(self, request, queryset):
         for timeslice in queryset:
             if timeslice.is_invoiced is True:
@@ -99,10 +103,9 @@ class TimeSliceAdmin(admin.ModelAdmin):
         'is_invoiced']
     
     list_filter = (
-        'project',
+        ('project',admin.RelatedOnlyFieldListFilter),
         'is_invoiced',
         'start_time',
-        'end_time'
         )
 
     # only let us select active projects
