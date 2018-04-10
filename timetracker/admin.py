@@ -17,6 +17,7 @@ class ProjectAdmin(admin.ModelAdmin):
 
  
 class TimeSliceAdmin(admin.ModelAdmin):
+    change_list_template = 'admin_change_list.html'
     
     def toggle_invoiced(self, request, queryset):
         for timeslice in queryset:
@@ -52,18 +53,22 @@ class TimeSliceAdmin(admin.ModelAdmin):
             duration_sum += time_slice.duration_minutes()
 
             if time_slice.project is not None:
-                project_name =  time_slice.project.name.encode('utf-8')
+                project_name = time_slice.project.name.encode('utf-8')
             else:
                 project_name = ''
                 
             writer.writerow([
-                str(localtime(time_slice.start_time, get_current_timezone())).encode('ascii'), 
-                str(localtime(time_slice.end_time, get_current_timezone())).encode('ascii'), 
-                str(time_slice.break_duration_minutes).encode('ascii'),
-                str(time_slice.duration_minutes()).encode('ascii'),
-                time_slice.description.encode('utf-8'),
+                localtime(
+                    time_slice.start_time,
+                    get_current_timezone()).strftime('%Y-%m-%d %H:%M'),
+                localtime(
+                    time_slice.end_time,
+                    get_current_timezone()).strftime('%Y-%m-%d %H:%M'),
+                str(time_slice.break_duration_minutes),
+                str(time_slice.duration_minutes()),
+                time_slice.description,
                 project_name,
-                str(time_slice.is_invoiced).encode('ascii')
+                str(time_slice.is_invoiced)
                 ])
         
         writer.writerow([
@@ -112,6 +117,27 @@ class TimeSliceAdmin(admin.ModelAdmin):
             **kwargs)
 
         return formfield
+
+    def changelist_view(self, request, extra_context=None):
+        response = super().changelist_view(
+            request,
+            extra_context=extra_context,
+        )
+        try:
+            qs = response.context_data['cl'].queryset
+        except (AttributeError, KeyError):
+
+            return response
+
+        duration_summary = 0
+
+        for timeslice in qs:
+            duration_summary += timeslice.duration_minutes()
+
+        response.context_data['duration_summary_hours'] = round(duration_summary/60, 2)
+        response.context_data['duration_summary_days'] = round(duration_summary/60/8, 2)
+
+        return response
 
     actions = [toggle_invoiced, export]
 

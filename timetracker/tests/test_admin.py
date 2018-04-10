@@ -1,7 +1,7 @@
 from django.contrib.admin.sites import AdminSite
-from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import RequestFactory
+from django.urls import reverse
 
 from timetracker.models import TimeSlice, Project
 from timetracker.admin import TimeSliceAdmin
@@ -17,13 +17,14 @@ class MockSuperUser(object):
 
     is_staff = True
 
+
 class TestTimeSliceAdmin(TestCase):
 
     def test_export(self):
 
         # create a few timeslices with start / stop times and durations
-        test_slice = TimeSlice(start_time='2014-01-01 08:15',
-                          end_time='2014-01-01 11:47')
+        test_slice = TimeSlice(start_time='2014-01-01 08:15+01:00',
+                          end_time='2014-01-01 11:47+01:00')
         test_slice.break_duration_minutes = 15
 
         test_slice.save()
@@ -38,7 +39,14 @@ class TestTimeSliceAdmin(TestCase):
         export = str(admin.export(request, queryset).content)
 
         assert "08:15" in export
+
+        # Ensure no timezone stuff in the datetimes...
+
         assert "+00:00" not in export
+        assert "+01:00" not in export
+        assert "+02:00" not in export
+        assert "+" not in export
+
         assert ",3" in export
 
     def test_inactive_projects_not_selectable_for_timeslice_creation(self):

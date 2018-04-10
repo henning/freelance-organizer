@@ -40,7 +40,7 @@ class TimeSlice(models.Model):
     # into multiple slices doesn't make much sense.
     break_duration_minutes = models.IntegerField(default=0)
 
-    project = models.ForeignKey(Project, null=True)
+    project = models.ForeignKey(Project, null=True, on_delete=models.PROTECT)
     
     is_invoiced = models.BooleanField(default=False)
    
@@ -52,15 +52,14 @@ class TimeSlice(models.Model):
         if self.end_time is None or self.start_time is None:
             return 0
         
-        # FIXME: must also substract break time!
         duration_delta = self.end_time - self.start_time
 
         duration_minutes = duration_delta.seconds/60
 
         if self.break_duration_minutes is not None:
-            duration_minutes = duration_minutes - self.break_duration_minutes
+            duration_minutes = duration_minutes - float(self.break_duration_minutes)
 
-        return duration_minutes
+        return round(duration_minutes,2)
 
     def __str__(self):
         return self.description

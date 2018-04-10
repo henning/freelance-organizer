@@ -41,7 +41,7 @@ INSTALLED_APPS = (
     'simple_crm'
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -69,16 +69,36 @@ DATABASES = {
     }
 }
 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
+TIME_FORMAT = 'H:i'
+DATE_FORMAT= 'Y-m-d'
+DATETIME_FORMAT = '{} {}'.format(DATE_FORMAT, TIME_FORMAT)
+
 TIME_ZONE = 'CET'
 
 USE_I18N = True
 
-USE_L10N = True
+#USE_L10N = True
 
 USE_TZ = True
 

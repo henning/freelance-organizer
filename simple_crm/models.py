@@ -59,7 +59,8 @@ class BusinessOpportunity(BaseModel):
     is_open = models.BooleanField(default=True)
     is_realized = models.BooleanField(default=False)
 
-    contact_person = models.ForeignKey(ContactPerson, blank=True, null=True)
+    contact_person = models.ForeignKey(
+        ContactPerson, blank=True, null=True, on_delete=models.PROTECT)
 
     class Meta:
         ordering = ["name", "last_changed"]
@@ -76,10 +77,11 @@ class Activity(BaseModel):
 
     short_description = models.CharField(max_length=80)
 
-    contact_person = models.ForeignKey(ContactPerson, blank=True, null=True)
+    contact_person = models.ForeignKey(
+        ContactPerson, blank=True, null=True, on_delete=models.PROTECT)
 
     business_opportunity = models.ForeignKey(
-        BusinessOpportunity, blank=True, null=True)
+        BusinessOpportunity, blank=True, null=True, on_delete=models.PROTECT)
 
     # date_due
     # date_start
