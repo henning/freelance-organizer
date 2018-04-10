@@ -17,7 +17,6 @@ class ProjectAdmin(admin.ModelAdmin):
 
  
 class TimeSliceAdmin(admin.ModelAdmin):
-    change_list_template = 'admin_change_list.html'
     
     def toggle_invoiced(self, request, queryset):
         for timeslice in queryset:
