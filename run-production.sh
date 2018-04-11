@@ -1,5 +1,5 @@
 #!/bin/bash
-docker run -it \
+docker run -d \
   --name freelance-organizer \
   -v $(pwd):/var/lib/freelance-organizer \
   -p 9000:9000 \
