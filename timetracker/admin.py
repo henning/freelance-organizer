@@ -1,5 +1,9 @@
+from calendar import monthrange
+from datetime import date, timedelta
 from django.contrib import admin
 from django.http import HttpResponse
+from django.utils.translation import gettext_lazy as _
+
 import csv
 from django.utils.timezone import localtime, get_current_timezone
 
@@ -15,7 +19,87 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = [
         'name']
 
- 
+
+class TimerangeListFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = _('Timerange')
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'timerange'
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        return (
+            ('current_week', _('current week')),
+            ('last_week', _('last week')),
+
+            ('current_month', _('current month')),
+            ('last_month', _('last month')),
+
+            ('current_year', _('current year')),
+            ('last_year', _('last year')),
+
+            # ('current_week', 'current week'),
+            #('current_month', 'current month'),
+            #('last_week', 'last week'),
+            #('last_month', 'last month')
+            #('current_year', 'current year'),
+        )
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+
+        today = date.today()
+        year, week, weekday = today.isocalendar()
+
+        if self.value() == 'current_week':
+            # first day of this week
+            first_day = today - timedelta(days=weekday-1)
+
+            # last day of this week?
+            last_day = first_day+timedelta(days=6)
+
+        elif self.value() == 'last_week':
+            first_day = today - timedelta(days=weekday+6)
+            last_day = first_day + timedelta(days=6)
+
+        elif self.value() == 'current_month':
+            first_day = today - timedelta(days=today.day-1)
+            month_days = monthrange(first_day.year, first_day.month)[1]
+            last_day = first_day + timedelta(days=month_days-1)
+
+        elif self.value() == 'last_month':
+            last_day = today - timedelta(days=today.day)
+
+            last_month_days = monthrange(
+                last_day.year, last_day.month)[1]
+
+            first_day = last_day - timedelta(days=last_month_days-1)
+
+        elif self.value() == 'current_year':
+            first_day = date(day=1, month=1, year=today.year)
+            last_day = date(day=31, month=12, year=today.year)
+        elif self.value() == 'last_year':
+            first_day = date(day=1, month=1, year=today.year-1)
+            last_day = date(day=31, month=12, year=today.year-1)
+        else:
+            return queryset
+
+        return queryset.filter(start_time__gte=first_day,
+                               start_time__lte=last_day)
+
+
 class TimeSliceAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -103,6 +187,7 @@ class TimeSliceAdmin(admin.ModelAdmin):
         'is_invoiced']
     
     list_filter = (
+        TimerangeListFilter,
         ('project',admin.RelatedOnlyFieldListFilter),
         'is_invoiced',
         'start_time',
