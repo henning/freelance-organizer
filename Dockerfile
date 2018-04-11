@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:17.10
 
 RUN apt-get update
 RUN apt-get -y dist-upgrade
@@ -15,6 +15,8 @@ ADD . /opt/freelance-organizer/app
 
 WORKDIR /opt/freelance-organizer/app
 
-EXPOSE 8000
+ENV DJANGO_SETTINGS_MODULE=freelance_organizer.settings.production
+
+EXPOSE 9000
 
 ENTRYPOINT ["./docker-run.sh"]
