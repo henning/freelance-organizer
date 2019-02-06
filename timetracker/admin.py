@@ -45,12 +45,6 @@ class TimerangeListFilter(admin.SimpleListFilter):
 
             ('current_year', _('current year')),
             ('last_year', _('last year')),
-
-            # ('current_week', 'current week'),
-            #('current_month', 'current month'),
-            #('last_week', 'last week'),
-            #('last_month', 'last month')
-            #('current_year', 'current year'),
         )
 
     def queryset(self, request, queryset):
@@ -96,8 +90,11 @@ class TimerangeListFilter(admin.SimpleListFilter):
         else:
             return queryset
 
+        print(first_day)
+        print(last_day+timedelta(days=1))
+
         return queryset.filter(start_time__gte=first_day,
-                               start_time__lte=last_day)
+                               start_time__lte=last_day+timedelta(days=1))
 
 
 class TimeSliceAdmin(admin.ModelAdmin):
