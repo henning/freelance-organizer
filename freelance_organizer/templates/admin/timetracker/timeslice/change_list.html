@@ -4,6 +4,10 @@
       {% block result_list %}
           {% if action_form and actions_on_top and cl.show_admin_actions %}{% admin_actions %}{% endif %}
           {% result_list cl %}
+
+    {% for project, project_hours in project_hour_summaries.items %}
+      <p>Project: {{ project.name }} - hours: {{ project_hours }}</p>
+    {% endfor %}
 <h3>Total - hours: {{ duration_summary_hours }} - days: {{ duration_summary_days }}</h3>
           {% if action_form and actions_on_bottom and cl.show_admin_actions %}{% admin_actions %}{% endif %}
       {% endblock %}

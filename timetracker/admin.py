@@ -214,10 +214,21 @@ class TimeSliceAdmin(admin.ModelAdmin):
             return response
 
         duration_summary = 0
+        project_hour_summaries = dict()
 
         for timeslice in qs:
+            project = timeslice.project
             duration_summary += timeslice.duration_minutes()
 
+            if project not in project_hour_summaries.keys():
+                project_hour_summaries[project] = 0
+
+            project_hour_summaries[project] += timeslice.duration_minutes()
+
+        for project in project_hour_summaries.keys():
+            project_hour_summaries[project] = round(project_hour_summaries[project]/60, 2)
+
+        response.context_data['project_hour_summaries'] = project_hour_summaries
         response.context_data['duration_summary_hours'] = round(duration_summary/60, 2)
         response.context_data['duration_summary_days'] = round(duration_summary/60/8, 2)
 
