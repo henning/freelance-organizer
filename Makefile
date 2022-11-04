@@ -5,6 +5,9 @@ manage = python manage.py
 docker-build:
 	docker build -t freelance-organizer .
 
+docker-tag:
+	docker tag freelance-organizer:latest freelance-organizer:production
+
 test: test-code test-style
 
 test-code:
