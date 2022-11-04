@@ -1,6 +1,10 @@
 #!/bin/bash
+
+# DB_DIR=/Users/henning/Library/FreelanceOrganizer
+DB_DIR=/home/henning/data/produktion/freelance-organizer/prod-db
+
 docker run -d \
   --name freelance-organizer \
-  -v $(pwd):/var/lib/freelance-organizer \
+  -v $DB_DIR:/var/lib/freelance-organizer \
   -p 9000:9000 \
   freelance-organizer:production
