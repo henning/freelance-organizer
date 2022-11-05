@@ -17,6 +17,9 @@ docker-run-prod:
 docker-tag-latest-production:
 	docker tag freelance-organizer:latest freelance-organizer:production
 
+db-tmp-backup:
+	cp db.sqlite3 tmp/backups/db.sqlite3_$(date +%Y-%m-%d_%s)
+
 test: test-code test-style
 
 test-code:
