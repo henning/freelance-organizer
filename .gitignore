@@ -1,5 +1,7 @@
 .idea
 .cache
+.pytest_cache/
 db.sqlite3
 __pycache__
 *.pyc
+/tmp
