@@ -1,9 +1,9 @@
-FROM ubuntu:19.10
+FROM ubuntu:22.10
 
 RUN apt-get update
 RUN apt-get -y dist-upgrade
 
-RUN apt-get install -y python-virtualenv
+RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install virtualenv tzdata
 
 RUN mkdir -p /opt/freelance-organizer
 
