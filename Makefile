@@ -3,7 +3,16 @@
 manage = python manage.py
 
 docker-build:
-	docker build -t freelance-organizer .
+	cd docker; \
+		docker-compose build freelance-organizer-dev
+
+docker-run-dev:
+	cd docker; \
+		docker-compose up freelance-organizer-dev
+
+docker-run-prod:
+	cd docker; \
+		docker-compose up -d freelance-organizer-prod
 
 docker-tag-latest-production:
 	docker tag freelance-organizer:latest freelance-organizer:production
