@@ -19,4 +19,4 @@ ENV DJANGO_SETTINGS_MODULE=freelance_organizer.settings.production
 
 EXPOSE 9000
 
-ENTRYPOINT ["./docker-run.sh"]
+ENTRYPOINT ["./docker/docker-run.sh"]
