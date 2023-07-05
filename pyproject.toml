@@ -8,6 +8,7 @@ packages = [{include = "freelance_organizer"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+Django = "4.1.3"
 
 
 [build-system]
