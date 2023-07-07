@@ -1,13 +1,14 @@
 version: "3.9"
+name: freelance-organizer
 services:
-  freelance-organizer-prod:
+  prod-app:
     image: freelance-organizer:production
     ports:
       - "9000:9000"
     restart: unless-stopped
     volumes:
       - ../../prod-db:/var/lib/freelance-organizer
-  freelance-organizer-dev:
+  dev-app:
     image: freelance-organizer:latest
     build:
       context: ..
