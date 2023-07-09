@@ -8,6 +8,15 @@ services:
     restart: unless-stopped
     volumes:
       - ../../prod-db:/var/lib/freelance-organizer
+
+  prod-import:
+    image: freelance-organizer:production
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+    volumes:
+      - ../../prod-db:/var/lib/freelance-organizer
+
   dev-app:
     image: freelance-organizer:latest
     build:
@@ -17,3 +26,15 @@ services:
       - "9999:9000"
     volumes:
       - ../../dev-db:/var/lib/freelance-organizer
+
+  dev-import:
+    image: freelance-organizer:latest
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "9999:9000"
+    volumes:
+      - ../../dev-db:/var/lib/freelance-organizer
+    command:
+      - import
