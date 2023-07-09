@@ -109,30 +109,39 @@ class TimeSliceAdmin(admin.ModelAdmin):
                 timeslice.is_invoiced = False
             elif timeslice.is_invoiced is False:
                 timeslice.is_invoiced = True
-            
             timeslice.save()
 
-    toggle_invoiced.short_description='toggle invoiced state'
+    toggle_invoiced.short_description = 'Toggle invoiced state'
+
+    def toggle_import_checked(self, request, queryset):
+        for timeslice in queryset:
+            if timeslice.is_checked_after_import is True:
+                timeslice.is_checked_after_import = False
+            elif timeslice.is_checked_after_import is False:
+                timeslice.is_checked_after_import = True
+            timeslice.save()
+
+    toggle_import_checked.short_description = 'Toggle import checked state'
 
     def export(self, request, queryset):
         # Create the HttpResponse object with the appropriate CSV header.
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="zeiten.csv"'
-    
+
         writer = csv.writer(response)
-    
+
         duration_sum = 0
-               
+
         writer.writerow([
-            'Beginn', 
-            'Ende', 
+            'Beginn',
+            'Ende',
             'Pause',
             'Dauer',
             'Beschreibung',
             'Projekt',
             'Abgerechnet'
         ])
-         
+
         for time_slice in queryset:
             duration_sum += time_slice.duration_minutes()
 
@@ -140,7 +149,7 @@ class TimeSliceAdmin(admin.ModelAdmin):
                 project_name = time_slice.project.name.encode('utf-8')
             else:
                 project_name = ''
-                
+
             writer.writerow([
                 localtime(
                     time_slice.start_time,
@@ -153,10 +162,10 @@ class TimeSliceAdmin(admin.ModelAdmin):
                 time_slice.description,
                 project_name,
                 str(time_slice.is_invoiced)
-                ])
-        
+            ])
+
         writer.writerow([
-            '', 
+            '',
             '',
             '',
             duration_sum/60,
@@ -168,10 +177,10 @@ class TimeSliceAdmin(admin.ModelAdmin):
         'start_time',
         'end_time',
         'description',
-        'break_duration_minutes', 
-        'project', 
+        'break_duration_minutes',
+        'project',
         'is_invoiced']
-    
+
     search_fields = ['description', 'project__name']
 
     list_display = [
@@ -180,15 +189,17 @@ class TimeSliceAdmin(admin.ModelAdmin):
         'project',
         'description',
         'duration_minutes',
-        'break_duration_minutes', 
+        'break_duration_minutes',
         'is_invoiced']
-    
+
     list_filter = (
         TimerangeListFilter,
         ('project',admin.RelatedOnlyFieldListFilter),
         'is_invoiced',
         'start_time',
-        )
+        'is_imported',
+        'is_checked_after_import'
+    )
 
     # only let us select active projects
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -234,7 +245,7 @@ class TimeSliceAdmin(admin.ModelAdmin):
 
         return response
 
-    actions = [toggle_invoiced, export]
+    actions = [export, toggle_invoiced, toggle_import_checked]
 
 
 admin.site.register(TimeSlice, TimeSliceAdmin)
