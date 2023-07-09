@@ -43,6 +43,10 @@ class TimeSlice(models.Model):
     project = models.ForeignKey(Project, null=True, on_delete=models.PROTECT)
     
     is_invoiced = models.BooleanField(default=False)
+
+    is_imported = models.BooleanField(default=False)
+
+    is_checked_after_import = models.BooleanField(default=False)
    
     def duration_minutes(self):
         """
