@@ -1,7 +1,12 @@
 import csv
-from io import StringIO
+from io import StringIO, open
 
-from django.core.exceptions import ObjectDoesNotExist
+import django.db.transaction
+from django.conf import settings
+import os
+
+from django.core.exceptions import ValidationError
+from django.db import transaction
 
 from timetracker.models import TimeSlice, Project
 
@@ -10,7 +15,15 @@ class TimeSliceImporter():
     def import_tsv_string(self, import_string):
         # read the tsv string into a csv object
         import_string_io = StringIO(import_string)
-        data_reader = csv.reader(import_string_io, delimiter="\t")
+        return self.import_tsv_file(import_string_io)
+
+    def import_tsv_file(self, import_file=None):
+
+        if import_file is None:
+            import_file_name = f"{settings.DATA_DIR}{os.path.sep}import.tsv"
+            import_file = open(import_file_name)
+
+        data_reader = csv.reader(import_file, delimiter="\t")
         # create timeslices for each row
         import_count=0
         row_count = 0
@@ -26,8 +39,17 @@ class TimeSliceImporter():
 
             slice = TimeSlice()
 
+            # cells that must not be empty
+
             slice.start_time = f"{row[0].strip()} {row[1]}"
+            if slice.start_time.strip()=="":
+                print(f"empty start time in row {row}")
+                continue
             slice.end_time = f"{row[2]} {row[3]}"
+
+            if slice.end_time.strip() == "":
+                print(f"empty start time in row {row}")
+                continue
 
             break_minutes = row[4]
             if len(break_minutes) == 0:
@@ -53,6 +75,13 @@ class TimeSliceImporter():
 
             slice.is_imported=True
             slice.save()
+            # except ValidationError as e:
+            #     print(e)
+            #     print(f"Validation error on saving row: {row}")
+            #     #django.db.transaction.rollback()
+            #     continue
+
             import_count+=1
 
+        import_file.close()
         print(f"imported {import_count} of {row_count} rows")

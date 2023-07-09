@@ -54,6 +54,7 @@ ROOT_URLCONF = 'freelance_organizer.urls'
 
 WSGI_APPLICATION = 'freelance_organizer.wsgi.application'
 
+DATA_DIR="."
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
