@@ -9,6 +9,8 @@ if [ -z $1 ] || [ $1 = 'run' ]; then
     $MANAGE runserver 0.0.0.0:9000
 elif [ $1 = 'dumpdata' ]; then
     $MANAGE dumpdata
+elif [ $1 = 'import' ]; then
+    $MANAGE import
 elif [ $1 = 'shell' ]; then
     /bin/bash
 else
