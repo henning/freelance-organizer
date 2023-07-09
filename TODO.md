@@ -2,8 +2,6 @@
 
 ## Features
 
-* upgrade to latest Django and libs
-
 * add import
   * from CSV or TSV file
   * from text lines (e.g. current spreadsheet...)
