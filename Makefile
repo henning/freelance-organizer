@@ -1,18 +1,18 @@
 .PHONY: docker-build
 
-manage = python manage.py
+manage = poetry run python manage.py
 
 docker-build:
 	cd docker; \
-		docker-compose build freelance-organizer-dev
+		docker compose build dev-app
 
 docker-run-dev:
 	cd docker; \
-		docker-compose up freelance-organizer-dev
+		docker compose up dev-app
 
 docker-run-prod:
 	cd docker; \
-		docker-compose up -d freelance-organizer-prod
+		docker compose up -d prod-app
 
 docker-tag-latest-production:
 	docker tag freelance-organizer:latest freelance-organizer:production
@@ -20,13 +20,13 @@ docker-tag-latest-production:
 db-tmp-backup:
 	cp db.sqlite3 tmp/backups/db.sqlite3_$(date +%Y-%m-%d_%s)
 
-test: test-code test-style
+test-all: test test-style
 
-test-code:
-	py.test
+test:
+	poetry run pytest
 
 test-style:
-	py.test --flake8
+	poetry run pytest --flake8
 
 migrations_create:
 	$(manage) makemigrations
@@ -39,3 +39,9 @@ run: migrations_run
 
 shell:
 	$(manage) shell
+
+.PHONY: setup-project
+setup-project:
+	apt-get -y install python3-poetry
+	poetry install
+
