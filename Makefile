@@ -10,6 +10,15 @@ docker-run-dev:
 	cd docker; \
 		docker compose up dev-app
 
+docker-dev-import:
+	cd docker; \
+		docker compose run dev-import
+
+docker-prod-import:
+	echo "TYPE THIS:\n" \
+	echo "cd docker;" \
+		"compose run dev-import"
+
 docker-run-prod:
 	cd docker; \
 		docker compose up -d prod-app
