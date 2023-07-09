@@ -1,22 +1,29 @@
-FROM ubuntu:22.10
+FROM ubuntu:23.04
 
-RUN apt-get update
-RUN apt-get -y dist-upgrade
+RUN apt-get update && apt-get -y dist-upgrade
 
-RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install virtualenv tzdata
+RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get -y install \
+    make python3-poetry python3-virtualenv
 
 RUN mkdir -p /opt/freelance-organizer
 
-RUN virtualenv -p $(which python3) /opt/freelance-organizer/venv
-ADD requirements.txt /tmp/
-RUN /opt/freelance-organizer/venv/bin/pip install -r /tmp/requirements.txt
+ADD . /tmp/build
+WORKDIR /tmp/build
 
-ADD . /opt/freelance-organizer/app
+RUN poetry install
+RUN make test
 
-WORKDIR /opt/freelance-organizer/app
+RUN python3 -m virtualenv /opt/freelance-organizer/venv
+
+RUN /opt/freelance-organizer/venv/bin/python3 -m pip install .
+
+WORKDIR /opt/freelance-organizer/
+COPY docker/run-app.sh .
+
+RUN rm -rf /tmp/build
 
 ENV DJANGO_SETTINGS_MODULE=freelance_organizer.settings.production
 
 EXPOSE 9000
 
-ENTRYPOINT ["./docker/docker-run.sh"]
+ENTRYPOINT ["/opt/freelance-organizer/run-app.sh"]
