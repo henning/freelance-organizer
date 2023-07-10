@@ -16,6 +16,8 @@ services:
     restart: unless-stopped
     volumes:
       - ../../prod-db:/var/lib/freelance-organizer
+    command:
+      - import
 
   dev-app:
     image: freelance-organizer:latest
