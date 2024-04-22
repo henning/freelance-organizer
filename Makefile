@@ -2,6 +2,13 @@
 
 manage = poetry run python manage.py
 
+ifeq (, $(shell ls /etc/fedora-release))
+POETRY_INSTALL_CMD=sudo apt-get -y install python3-poetry
+else
+POETRY_INSTALL_CMD=sudo dnf install poetry
+endif
+
+
 docker-build:
 	cd docker; \
 		docker compose build dev-app
@@ -51,6 +58,6 @@ shell:
 
 .PHONY: setup-project
 setup-project:
-	apt-get -y install python3-poetry
+	$(POETRY_INSTALL_CMD)
 	poetry install
 
