@@ -24,7 +24,7 @@ docker-dev-import:
 docker-prod-import:
 	echo "TYPE THIS:\n" \
 	echo "cd docker;" \
-		"compose run dev-import"
+		"docker compose run prod-import"
 
 docker-run-prod:
 	cd docker; \
