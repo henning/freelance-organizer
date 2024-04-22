@@ -1,6 +1,5 @@
 from django.db import models
-
-# Create your models here.
+from django.db.models import TextField, BooleanField
 
 
 class Project(models.Model):
@@ -67,3 +66,36 @@ class TimeSlice(models.Model):
 
     def __str__(self):
         return self.description
+
+
+class ImportData(models.Model):
+
+    creation_timestamp = models.DateTimeField(auto_now=True, editable=False)
+
+    # TODO: Should this be editable?
+    # if changed, we must delete data imported by this and run import process again...
+    # so maybe better to not allow editing
+    import_data = TextField(blank=False, null=False)
+
+    import_done = BooleanField(default=False)
+
+    notes = TextField(blank=True, null=True)
+
+    # TODO: Relation to the TimeSlices created based on this data
+
+    # TODO: Timestamp when the import has been done? here or in the TimeSlice?
+    #  maybe this here should have an import_run datetime... while timeSLices
+    #  still could have an creation timestamp?
+    # maybe we even want import started and import finished date to have
+    # information when an import did not finish properly
+
+
+    # TODO: import_run_results? errors, messages and number of
+    #  timeslices created or so? (because the relation will only show slices
+    #  that still exist...
+
+    # TODO: how to treat re-imports, e.g. because the importer code has been
+    #  changed/improved/fixed?
+    # -> maybe thats not a standard behaviour, but if such cases become
+    #    necessary we must individually decide what's best to do (e.g. delete
+    #    all Timeslices based on an import, reimport, set date etc again?)
