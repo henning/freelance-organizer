@@ -14,7 +14,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.10"
-Django = "^4.2.15"
+Django = "^4.2.16"
 tzdata = "^2023.3"
 
 
